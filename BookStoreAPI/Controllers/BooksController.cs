@@ -90,7 +90,7 @@ namespace BookStoreAPI.Controllers
             await _bookService.DeleteBookAsync(id);
             return NoContent();
         }
-
+        // Add the following code to the BooksController.cs file:
         [HttpGet("check-session")]
         public async Task<IActionResult> CheckSession()
         {
