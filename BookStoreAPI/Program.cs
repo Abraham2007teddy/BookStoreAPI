@@ -13,6 +13,7 @@ builder.Services.AddSingleton<IMongoDatabase>(database);
 builder.Services.AddSingleton<IMongoCollection<User>>(database.GetCollection<User>("Users"));
 builder.Services.AddSingleton<IMongoCollection<Book>>(database.GetCollection<Book>("Books"));
 
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {

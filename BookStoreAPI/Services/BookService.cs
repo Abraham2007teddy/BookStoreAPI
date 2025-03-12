@@ -1,18 +1,21 @@
 ﻿using BookStoreAPI.Models;
 using MongoDB.Driver;
-
+using MongoDB.Driver.GridFS;
 
 namespace BookStoreAPI.Services
 {
     public class BookService
     {
         private readonly IMongoCollection<Book> _booksCollection;
+        private readonly GridFSBucket _gridFS;
 
         public BookService(IConfiguration config)
         {
             var mongoClient = new MongoClient(config["MongoDb:ConnectionString"]);
             var mongoDatabase = mongoClient.GetDatabase(config["MongoDb:DatabaseName"]);
             _booksCollection = mongoDatabase.GetCollection<Book>(config["MongoDb:CollectionName"]);
+
+            _gridFS = new GridFSBucket(mongoDatabase);
         }
 
         public async Task<List<Book>> GetBookAsync() => 
@@ -31,5 +34,6 @@ namespace BookStoreAPI.Services
 
         public async Task DeleteBookAsync(string id) =>
             await _booksCollection.DeleteOneAsync(book => book.Id == id);
+   
     }
 }

@@ -15,5 +15,7 @@ namespace BookStoreAPI.Models
         public string Author { get; set; } = string.Empty;
         [BsonElement("price")]
         public decimal Price { get; set; }
+        [BsonElement("image")]
+        public string? ImageBase64 { get; set; } 
     }
 }

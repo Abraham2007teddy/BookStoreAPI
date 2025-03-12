@@ -21,21 +21,10 @@ namespace BookStoreAPI.Controllers
             _users = database.GetCollection<User>("Users");
         }
 
-        private async Task<bool> IsUserAuthenticated(HttpContext httpContext)
-        {
-            var username = httpContext.Session.GetString("Username");
-            if (string.IsNullOrEmpty(username)) return false;
-
-            var existingUser = await _users.Find(u => u.Username == username).FirstOrDefaultAsync();
-            return existingUser != null;
-        }
 
         [HttpGet]
         public async Task<ActionResult<List<Book>>> Get()
         {
-            if (!await IsUserAuthenticated(HttpContext))
-                return Unauthorized(new { message = "Please log in first" });
-
             var books = await _bookService.GetBookAsync();
             return Ok(books);
         }
@@ -43,30 +32,45 @@ namespace BookStoreAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> Get(string id)
         {
-            if (!await IsUserAuthenticated(HttpContext))
-                return Unauthorized(new { message = "Please log in first" });
 
             var book = await _bookService.GetBookByIdAsync(id);
             if (book == null)
                 return NotFound();
             return Ok(book);
         }
+        [HttpGet("{id}/image")]
+        public async Task<IActionResult> GetBookImage(string id)
+        {
+            var book = await _bookService.GetBookByIdAsync(id);
+            if (book == null || string.IsNullOrEmpty(book.ImageBase64))
+            {
+                return NotFound("Image not found");
+            }
+
+            byte[] imageBytes = Convert.FromBase64String(book.ImageBase64);
+            return File(imageBytes, "image/jpeg"); // Change MIME type as needed
+        }
+
 
         [HttpPost]
-        public async Task<ActionResult<Book>> Post(Book book)
+        public async Task<ActionResult<Book>> Post([FromForm] Book book, IFormFile? imageFile)
         {
-            if (!await IsUserAuthenticated(HttpContext))
-                return Unauthorized(new { message = "Please log in first" });
+            if (imageFile != null)
+            {
+                using var memoryStream = new MemoryStream();
+                await imageFile.CopyToAsync(memoryStream);
+                book.ImageBase64 = Convert.ToBase64String(memoryStream.ToArray());
+            }
 
             await _bookService.CreateBookAsync(book);
             return CreatedAtAction(nameof(Get), new { id = book.Id }, book);
         }
 
+        
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, Book updateBook)
         {
-            if (!await IsUserAuthenticated(HttpContext))
-                return Unauthorized(new { message = "Please log in first" });
 
             var existingBook = await _bookService.GetBookByIdAsync(id);
             if (existingBook == null)
@@ -80,8 +84,6 @@ namespace BookStoreAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            if (!await IsUserAuthenticated(HttpContext))
-                return Unauthorized(new { message = "Please log in first" });
 
             var book = await _bookService.GetBookByIdAsync(id);
             if (book == null)
@@ -89,21 +91,6 @@ namespace BookStoreAPI.Controllers
 
             await _bookService.DeleteBookAsync(id);
             return NoContent();
-        }
-        // Add the following code to the BooksController.cs file:
-        [HttpGet("check-session")]
-        public async Task<IActionResult> CheckSession()
-        {
-            var username = HttpContext.Session.GetString("Username");
-
-            if (string.IsNullOrEmpty(username))
-            {
-                return Ok(new { message = "No active session", userExists = false });
-            }
-
-            var userExists = await _users.Find(u => u.Username == username).FirstOrDefaultAsync();
-
-            return Ok(new { username, userExists = userExists != null });
         }
 
     }
