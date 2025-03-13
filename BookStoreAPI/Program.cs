@@ -3,12 +3,12 @@ using BookStoreAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Read MongoDB settings from appsettings.json
+// MongoDB settings
 var mongoSettings = builder.Configuration.GetSection("MongoDB");
 var mongoClient = new MongoClient(mongoSettings["ConnectionString"]);
 var database = mongoClient.GetDatabase(mongoSettings["DatabaseName"]);
 
-// Register MongoDB collections as services
+// Mongodb
 builder.Services.AddSingleton<IMongoDatabase>(database);
 builder.Services.AddSingleton<IMongoCollection<User>>(database.GetCollection<User>("Users"));
 builder.Services.AddSingleton<IMongoCollection<Book>>(database.GetCollection<Book>("Books"));
