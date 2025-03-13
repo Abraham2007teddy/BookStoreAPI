@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-
+using System.Collections.Generic;
 
 namespace BookStoreAPI.Models
 {
@@ -19,5 +19,8 @@ namespace BookStoreAPI.Models
         public string? ImageBase64 { get; set; }
         [BsonElement("pdf")]
         public string? PdfBase64 { get; set; }
+        //Comments for book
+        [BsonElement("comments")]
+        public List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

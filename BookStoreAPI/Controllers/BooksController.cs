@@ -35,6 +35,7 @@ namespace BookStoreAPI.Controllers
                 return NotFound();
             return Ok(book);
         }
+
         [HttpGet("{id}/image")]
         public async Task<IActionResult> GetBookImage(string id)
         {

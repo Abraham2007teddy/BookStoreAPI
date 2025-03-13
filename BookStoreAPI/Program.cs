@@ -1,5 +1,6 @@
 using MongoDB.Driver;
 using BookStoreAPI.Models;
+using BookStoreAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Register BookService
+builder.Services.AddSingleton<CommentService>();
 builder.Services.AddSingleton<BookStoreAPI.Services.BookService>();
 
 var app = builder.Build();
