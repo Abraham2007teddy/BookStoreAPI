@@ -1,10 +1,7 @@
 ﻿using BookStoreAPI.Models;
 using BookStoreAPI.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace BookStoreAPI.Controllers
 {
@@ -48,18 +45,25 @@ namespace BookStoreAPI.Controllers
             }
 
             byte[] imageBytes = Convert.FromBase64String(book.ImageBase64);
-            return File(imageBytes, "image/jpeg"); // Change MIME type as needed
+            return File(imageBytes, "image/jpeg");
         }
 
 
         [HttpPost]
-        public async Task<ActionResult<Book>> Post([FromForm] Book book, IFormFile? imageFile)
+        public async Task<ActionResult<Book>> Post([FromForm] Book book, IFormFile? imageFile, IFormFile? pdfFile)
         {
             if (imageFile != null)
             {
                 using var memoryStream = new MemoryStream();
                 await imageFile.CopyToAsync(memoryStream);
                 book.ImageBase64 = Convert.ToBase64String(memoryStream.ToArray());
+            }
+
+            if (pdfFile != null)
+            {
+                using var pdfMemoryStream = new MemoryStream();
+                await pdfFile.CopyToAsync(pdfMemoryStream);
+                book.PdfBase64 = Convert.ToBase64String(pdfMemoryStream.ToArray());
             }
 
             await _bookService.CreateBookAsync(book);

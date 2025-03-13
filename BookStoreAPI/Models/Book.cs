@@ -16,6 +16,8 @@ namespace BookStoreAPI.Models
         [BsonElement("price")]
         public decimal Price { get; set; }
         [BsonElement("image")]
-        public string? ImageBase64 { get; set; } 
+        public string? ImageBase64 { get; set; }
+        [BsonElement("pdf")]
+        public string? PdfBase64 { get; set; }
     }
 }

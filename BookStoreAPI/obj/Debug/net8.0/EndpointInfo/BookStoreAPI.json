@@ -142,7 +142,14 @@
                   "ImageBase64": {
                     "type": "string"
                   },
+                  "PdfBase64": {
+                    "type": "string"
+                  },
                   "imageFile": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "pdfFile": {
                     "type": "string",
                     "format": "binary"
                   }
@@ -164,7 +171,13 @@
                 "ImageBase64": {
                   "style": "form"
                 },
+                "PdfBase64": {
+                  "style": "form"
+                },
                 "imageFile": {
+                  "style": "form"
+                },
+                "pdfFile": {
                   "style": "form"
                 }
               }
@@ -338,6 +351,10 @@
             "format": "double"
           },
           "imageBase64": {
+            "type": "string",
+            "nullable": true
+          },
+          "pdfBase64": {
             "type": "string",
             "nullable": true
           }

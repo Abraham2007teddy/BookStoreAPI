@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-using BookStoreAPI.Models;
-using BCrypt.Net;
 
 [Route("api/auth")]
 [ApiController]

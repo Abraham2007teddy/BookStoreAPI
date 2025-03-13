@@ -95,7 +95,17 @@
         "IsRequired": false
       },
       {
+        "Name": "PdfBase64",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
         "Name": "imageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "pdfFile",
         "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false
       }
